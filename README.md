@@ -1,40 +1,72 @@
-# Welcome to your Convex + Next.js app
+# IndiGo Backend
 
-This is a [Convex](https://convex.dev/) project created with [`npm create convex`](https://www.npmjs.com/package/create-convex).
+A Twitter webhook ingestion system that receives, normalizes, and stores tweets from Twitter's webhook API.
 
-After the initial setup (<2 minutes) you'll have a working full-stack app using:
+## Overview
 
-- Convex as your backend (database, server logic)
-- [React](https://react.dev/) as your frontend (web page interactivity)
-- [Next.js](https://nextjs.org/) for optimized web hosting and page routing
-- [Tailwind](https://tailwindcss.com/) for building great looking accessible UI
+This backend service is built with [Convex](https://convex.dev) and handles incoming tweet data from Twitter webhooks. It provides:
 
-## Get started
+- Real-time tweet ingestion via webhooks
+- Automatic deduplication of tweets
+- Structured storage with efficient indexing
+- Query capabilities by rule ID
 
-If you just cloned this codebase and didn't use `npm create convex`, run:
+## Tech Stack
+
+- **Backend**: Convex (database, server functions, HTTP handlers)
+- **Frontend**: Next.js, React
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+
+## Twitter Webhook Integration
+
+### Webhook Endpoint
+
+The application exposes a webhook endpoint at:
 
 ```
-npm install
-npm run dev
+/twitter-webhook
 ```
 
-If you're reading this README on GitHub and want to use this template, run:
+- `GET /twitter-webhook` - Handles Twitter's webhook verification handshake
+- `POST /twitter-webhook` - Receives tweet payloads from Twitter
+
+### Twitter API Setup
+
+The webhook is configured with the Twitter API using filter rules. Rules are managed at:
+
+**https://twitterapi.io/tweet-filter-rules**
+
+When tweets match configured filter rules, Twitter sends them to the `/twitter-webhook` endpoint with:
+- `event_type` - Type of event
+- `rule_id` - ID of the matching filter rule
+- `rule_tag` - Tag associated with the rule
+- `tweets` - Array of tweet objects
+- `timestamp` - Event timestamp
+
+## Getting Started
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+## Project Structure
 
 ```
-npm create convex@latest -- -t nextjs
+convex/
+  ├── http.ts        # HTTP endpoint handlers (webhook)
+  ├── twitter.ts     # Tweet storage and query functions
+  ├── schema.ts      # Database schema definitions
+  └── myFunctions.ts # Utility functions
 ```
 
-## Learn more
+## Learn More
 
-To learn more about developing your project with Convex, check out:
-
-- The [Tour of Convex](https://docs.convex.dev/get-started) for a thorough introduction to Convex principles.
-- The rest of [Convex docs](https://docs.convex.dev/) to learn about all Convex features.
-- [Stack](https://stack.convex.dev/) for in-depth articles on advanced topics.
-
-## Join the community
-
-Join thousands of developers building full-stack apps with Convex:
-
-- Join the [Convex Discord community](https://convex.dev/community) to get help in real-time.
-- Follow [Convex on GitHub](https://github.com/get-convex/), star and contribute to the open-source implementation of Convex.
+- [Convex Documentation](https://docs.convex.dev/)
+- [Next.js Documentation](https://nextjs.org/docs)
