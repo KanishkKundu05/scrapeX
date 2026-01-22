@@ -82,7 +82,14 @@ http.route({
         },
       });
 
-      // 5. Return success response with counts
+      // 5. Trigger routing for newly inserted tweets
+      if (result.insertedTweetIds && result.insertedTweetIds.length > 0) {
+        await ctx.scheduler.runAfter(0, internal.routing.processBatchRouting, {
+          tweetIds: result.insertedTweetIds,
+        });
+      }
+
+      // 6. Return success response with counts
       return new Response(
         JSON.stringify({
           success: true,

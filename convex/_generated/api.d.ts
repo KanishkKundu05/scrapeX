@@ -10,7 +10,10 @@
 
 import type * as http from "../http.js";
 import type * as myFunctions from "../myFunctions.js";
+import type * as routing from "../routing.js";
 import type * as twitter from "../twitter.js";
+import type * as twitterActions from "../twitterActions.js";
+import type * as twitterAuth from "../twitterAuth.js";
 
 import type {
   ApiFromModules,
@@ -21,7 +24,10 @@ import type {
 declare const fullApi: ApiFromModules<{
   http: typeof http;
   myFunctions: typeof myFunctions;
+  routing: typeof routing;
   twitter: typeof twitter;
+  twitterActions: typeof twitterActions;
+  twitterAuth: typeof twitterAuth;
 }>;
 
 /**

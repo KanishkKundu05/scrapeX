@@ -1,5 +1,32 @@
 import { v } from "convex/values";
 import { internalMutation, query } from "./_generated/server";
+import { Id } from "./_generated/dataModel";
+
+// Login API validator
+export const loginRequestValidator = v.object({
+  username: v.string(),
+  email: v.string(),
+  password: v.string(),
+  proxy: v.string(),
+  totp_secret: v.optional(v.string()),
+});
+
+// Create Tweet API validator
+export const createTweetRequestValidator = v.object({
+  login_cookies: v.string(),
+  tweet_text: v.string(),
+  proxy: v.string(),
+  reply_to_tweet_id: v.optional(v.string()),
+});
+
+// Routing rule validator
+export const routingRuleValidator = v.object({
+  name: v.string(),
+  keywords: v.array(v.string()),
+  priority: v.number(),
+  responseTemplate: v.string(),
+  isActive: v.boolean(),
+});
 
 // Validator for tweet author
 const tweetAuthorValidator = v.object({
@@ -37,6 +64,7 @@ export const storeTweets = internalMutation({
     const { event_type, rule_id, rule_tag, tweets, timestamp } = payload;
     let insertedCount = 0;
     let skippedCount = 0;
+    const insertedTweetIds: Id<"tweets">[] = [];
 
     for (const tweet of tweets) {
       // Check for existing tweet by tweetId
@@ -50,8 +78,8 @@ export const storeTweets = internalMutation({
         continue;
       }
 
-      // Insert normalized tweet data
-      await ctx.db.insert("tweets", {
+      // Insert normalized tweet data with pending routing status
+      const insertedId = await ctx.db.insert("tweets", {
         tweetId: tweet.id,
         text: tweet.text,
         authorId: tweet.author.id,
@@ -66,12 +94,14 @@ export const storeTweets = internalMutation({
         ruleTag: rule_tag,
         webhookTimestamp: timestamp,
         rawPayload: tweet,
+        routingStatus: "pending",
       });
 
+      insertedTweetIds.push(insertedId);
       insertedCount++;
     }
 
-    return { insertedCount, skippedCount };
+    return { insertedCount, skippedCount, insertedTweetIds };
   },
 });
 
