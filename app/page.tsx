@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -25,6 +27,12 @@ export default function Home() {
             <a href="#deeplink" className="hover:text-blue-300 transition-colors">
               Deep-Linked DMs
             </a>
+            <Link
+              href="/dashboard"
+              className="bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg px-3 py-1.5 font-medium transition-colors"
+            >
+              Convex Dashboard
+            </Link>
           </div>
         </div>
       </nav>
@@ -709,6 +717,13 @@ export default function Home() {
             </span>
           </div>
           <div className="flex items-center gap-4 text-xs text-slate-400">
+            <Link
+              href="/dashboard"
+              className="text-indigo-blue hover:underline font-medium"
+            >
+              Convex Dashboard
+            </Link>
+            <span>&middot;</span>
             <span>
               Powered by{" "}
               <strong className="text-slate-600">Convex</strong> +{" "}
